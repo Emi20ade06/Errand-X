@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ErrandX — campus service marketplace</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap">
+  <style>
+    :root {
+      --brand: #0F4C81; --brand-light: #1A6BB5; --brand-dark: #083560;
+      --accent: #F97316; --accent-hover: #EA6B0C;
+      --success: #16A34A; --success-bg: #DCFCE7; --success-text: #14532D;
+      --danger: #DC2626; --danger-bg: #FEE2E2; --danger-text: #7F1D1D;
+      --warn: #D97706; --warn-bg: #FEF3C7; --warn-text: #78350F;
+      --info-bg: #EEF4FF; --info-text: #1E3A8A;
+      --bg: #F1F5F9; --surface: #FFFFFF; --surface2: #F8FAFC;
+      --border: #CBD5E1; --border-light: #E2E8F0;
+      --text: #0F172A; --text2: #475569; --text3: #94A3B8;
+      --radius: 12px; --radius-sm: 8px; --radius-xs: 6px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+    /* NAV */
+    .nav { background: var(--brand-dark); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 54px; position: sticky; top: 0; z-index: 90; }
+    .logo { font-family: 'Syne', system-ui, sans-serif; font-size: 20px; font-weight: 800; color: #fff; cursor: pointer; letter-spacing: -0.5px; flex-shrink: 0; }
+    .logo span { color: #FDB97A; }
+    .nav-links { display: flex; align-items: center; gap: 2px; overflow: hidden; }
+    .nav-links button { background: transparent; border: none; color: rgba(255,255,255,0.72); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; font-family: inherit; white-space: nowrap; }
+    .nav-links button:hover { background: rgba(255,255,255,.12); color: #fff; }
+    .nav-links button.active { background: rgba(255,255,255,.18); color: #fff; }
+    .nav-cta { background: var(--accent) !important; color: #fff !important; font-weight: 700 !important; padding: 6px 14px !important; }
+    .nav-cta:hover { background: var(--accent-hover) !important; }
+
+    /* PAGES */
+    .page { display: none; padding: 28px 20px; max-width: 920px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 20px; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all .18s; white-space: nowrap; }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--brand-light); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #15803D; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: #B91C1C; }
+    .btn-warn { background: var(--warn); color: #fff; }
+    .btn-warn:hover:not(:disabled) { background: #B45309; }
+    .btn-slate { background: #475569; color: #fff; }
+    .btn-slate:hover:not(:disabled) { background: #334155; }
+    .btn-outline { background: #fff; color: var(--brand); border: 2px solid var(--brand); }
+    .btn-outline:hover:not(:disabled) { background: var(--info-bg); }
+    .btn-white { background: #fff; color: var(--brand-dark); font-weight: 700; }
+    .btn-white:hover:not(:disabled) { background: #F0F6FF; }
+    .btn-ghost-white { background: rgba(255,255,255,.15); color: #fff; border: 1.5px solid rgba(255,255,255,.45); }
+    .btn-ghost-white:hover:not(:disabled) { background: rgba(255,255,255,.25); }
+    .btn-sm { padding: 7px 14px; font-size: 13px; }
+    .btn-xs { padding: 4px 10px; font-size: 12px; border-radius: var(--radius-xs); }
+    .btn-full { width: 100%; }
+
+    /* CARDS */
+    .card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 20px; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .metric-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 18px; text-align: center; }
+    .metric-num { font-family: 'Syne', system-ui, sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
+    .metric-label { font-size: 11px; color: var(--text2); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+
+    /* PROVIDER CARD */
+    .p-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: all .2s; }
+    .p-card:hover { box-shadow: 0 6px 24px rgba(15,76,129,.13); transform: translateY(-2px); }
+    .p-card-hd { height: 84px; display: flex; align-items: center; justify-content: center; font-size: 36px; background: var(--brand-dark); }
+    .p-card-bd { padding: 13px 15px; }
+    .p-card-name { font-family: 'Syne', system-ui, sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .p-card-cat { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+    .p-card-ft { display: flex; justify-content: space-between; align-items: center; }
+    .rating { color: #F59E0B; font-size: 13px; font-weight: 600; }
+    .price { font-size: 13px; font-weight: 700; }
+
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .badge-blue { background: var(--info-bg); color: var(--info-text); }
+    .badge-green { background: var(--success-bg); color: var(--success-text); }
+    .badge-orange { background: #FEF3C7; color: var(--warn-text); }
+    .badge-gray { background: #F1F5F9; color: #475569; }
+    .badge-red { background: var(--danger-bg); color: var(--danger-text); }
+
+    /* FORMS */
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+    .form-input, .form-select { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; outline: none; transition: border .15s; background: #fff; color: var(--text); }
+    .form-input:focus, .form-select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,76,129,.1); }
+    .err-msg { font-size: 11px; color: var(--danger); margin-top: 4px; display: none; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+
+    /* TABS */
+    .tabs { display: flex; border-bottom: 2px solid var(--border-light); margin-bottom: 20px; }
+    .tab { padding: 9px 15px; font-size: 13px; font-weight: 600; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -2px; transition: all .15s; }
+    .tab:hover { color: var(--brand); }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+    /* MODAL FIX: CENTERING ACCENTUATED OVERLAYS SECURELY ON EVERY DISPLAY */
+    .modal-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      padding: 24px 16px;
+      display: none;
+      align-items: center; /* PERFECT VERTICAL CENTERING */
+      justify-content: center; /* PERFECT HORIZONTAL CENTERING */
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .modal-wrap.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 26px;
+      position: relative;
+      max-height: 90vh; /* SECURE BOUNDARY AGAINST OVERFLOW CUTOFFS */
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      margin: auto; /* ENFORCES FLEX ALIGN FALLBACKS */
+    }
+    .modal-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .modal-title { font-family: 'Syne', system-ui, sans-serif; font-size: 17px; font-weight: 800; }
+    .modal-close { background: #F1F5F9; border: none; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; font-size: 15px; display: flex; align-items: center; justify-content: center; color: var(--text2); }
+    .modal-close:hover { background: #E2E8F0; }
+
+    /* TOAST */
+    .toast-zone { position: sticky; top: 58px; z-index: 200; pointer-events: none; padding: 0 20px; }
+    .toast { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 15px; font-size: 13px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,.1); margin-bottom: 8px; animation: tin .2s ease; max-width: 380px; margin-left: auto; pointer-events: all; }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+    .toast.info { border-left: 4px solid var(--brand); }
+    .toast.warn { border-left: 4px solid var(--warn); }
+    @keyframes tin { from { transform: translateX(14px); opacity: 0 } to { transform: none; opacity: 1 } }
+
+    /* WALLET */
+    .wallet-hero { background: var(--brand-dark); color: #fff; border-radius: var(--radius); padding: 24px 28px; }
+    .wallet-bal { font-family: 'Syne', system-ui, sans-serif; font-size: 34px; font-weight: 800; }
+    .wallet-lbl { font-size: 11px; opacity: .6; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .wbtn { background: rgba(255,255,255,.18); color: #fff; border: 1.5px solid rgba(255,255,255,.35); border-radius: var(--radius-sm); padding: 8px 16px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .18s; }
+    .wbtn:hover { background: rgba(255,255,255,.28); }
+
+    /* TABLE */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .tbl th { text-align: left; padding: 9px 12px; background: var(--surface2); color: var(--text2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+    .tbl td { padding: 11px 12px; border-top: 1px solid var(--border-light); vertical-align: middle; }
+    .tbl tr:hover td { background: #FAFBFF; }
+
+    /* PROGRESS */
+    .prog-bar { background: var(--border-light); border-radius: 100px; height: 7px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 100px; transition: width .4s; }
+
+    /* AVATAR */
+    .av { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .av-sm { width: 30px; height: 30px; font-size: 11px; }
+
+    /* SOS */
+    .sos-btn { background: var(--danger); color: #fff; border: none; border-radius: 50%; width: 88px; height: 88px; font-family: 'Syne', system-ui, sans-serif; font-size: 19px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 0 0 10px rgba(220,38,38,.18); transition: all .2s; }
+    .sos-btn:hover { background: #B91C1C; }
+
+    /* TIMELINE */
+    .tl { border-left: 2px solid var(--border); padding-left: 20px; }
+    .tl-item { position: relative; margin-bottom: 18px; }
+    .tl-item::before { content: ''; position: absolute; left: -25px; top: 4px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; }
+    .tl-item.done::before { background: var(--success); }
+    .tl-item.current::before { background: var(--accent); animation: pulse 1.5s infinite; }
+    .tl-item.pending::before { background: var(--border); }
+    @keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.4) } }
+
+    /* MISC */
+    .divider { border: none; border-top: 1px solid var(--border-light); margin: 14px 0; }
+    .flex { display: flex; } .items-center { align-items: center; } .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; } .gap-3 { gap: 12px; }
+    .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
+    .text-muted { color: var(--text2); } .text-faint { color: var(--text3); }
+    .font-med { font-weight: 600; } .w-full { width: 100%; }
+    .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; }
+    .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; }
+    .text-center { text-align: center; }
+    .section-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-family: 'Syne', system-ui, sans-serif; font-size: 19px; font-weight: 800; }
+    .hd-link { font-size: 13px; color: var(--brand); cursor: pointer; font-weight: 600; }
+    .info-box { background: var(--info-bg); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: var(--info-text); display: flex; gap: 8px; align-items: flex-start; margin-bottom: 14px; }
+    .warn-box { background: var(--warn-bg); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: var(--warn-text); display: flex; gap: 8px; align-items: flex-start; margin-bottom: 14px; }
+    .cat-chip { background: #fff; border: 1.5px solid var(--border); border-radius: 100px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; color: var(--text2); display: inline-flex; align-items: center; gap: 5px; }
+    .cat-chip:hover, .cat-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .stars { display: flex; gap: 3px; }
+    .star { font-size: 20px; cursor: pointer; color: var(--border); transition: color .1s; }
+    .star.on { color: #F59E0B; }
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-bottom: 1px solid var(--border-light); }
+    .stat-cell { padding: 16px; text-align: center; border-right: 1px solid var(--border-light); }
+    .stat-cell:last-child { border-right: none; }
+    .stat-n { font-family: 'Syne', system-ui, sans-serif; font-size: 22px; font-weight: 800; color: var(--brand); }
+    .stat-l { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; }
+
+    /* AUDIT */
+    .audit-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: var(--surface2); border-radius: var(--radius-sm); margin-bottom: 8px; border: 1px solid var(--border-light); }
+    .audit-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .rl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+    .rl-dot.warn { background: var(--warn); }
+    .rl-dot.danger { background: var(--danger); }
+
+    /* HERO SEARCH BAR */
+    .hero-search-wrapper {
+      max-width: 460px;
+      margin: 0 auto 20px;
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 6px;
+      display: flex;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      align-items: center;
+    }
+    .hero-search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: transparent;
+      min-width: 0;
+    }
+    .hero-search-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-xs);
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .15s;
+    }
+
+    /* RESPONSIVE MEDIA QUERIES FOR OVERALL DISPLACEMENT FIXES */
+    @media (max-width: 768px) {
+      /* Navigation refactoring to support all tabs without overflow cutoff */
+      .nav {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 14px;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-links {
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        gap: 5px;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-links button {
+        padding: 6px 10px;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+
+      /* Grid elements sizing adjustment for perfect spacing/grid line density */
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .stat-cell {
+        padding: 12px 10px !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-light) !important;
+      }
+      .stat-cell:nth-child(odd) {
+        border-right: 1px solid var(--border-light) !important;
+      }
+      .stat-cell:nth-child(3),
+      .stat-cell:nth-child(4) {
+        border-bottom: none !important;
+      }
+      .stat-n {
+        font-size: 19px !important;
+      }
+      .stat-l {
+        font-size: 9.5px !important;
+        letter-spacing: 0.2px !important;
+      }
+
+      /* Adjust general page spacing and font scales */
+      .page {
+        padding: 20px 12px !important;
+      }
+      .section-title {
+        font-size: 17px !important;
+      }
+      h1 {
+        font-size: 30px !important;
+        line-height: 1.2 !important;
+      }
+      
+      /* Card layout adjustments on mobile */
+      .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+        gap: 12px !important;
+      }
+      .p-card-hd {
+        height: 72px !important;
+        font-size: 30px !important;
+      }
+      .p-card-bd {
+        padding: 10px 12px !important;
+      }
+
+      /* Hero Search Bar on Mobile */
+      .hero-search-wrapper {
+        flex-direction: column;
+        border-radius: var(--radius);
+        padding: 8px;
+        gap: 8px;
+        align-items: stretch;
+      }
+      .hero-search-input {
+        width: 100%;
+        border-bottom: 1px solid var(--border-light) !important;
+        padding-bottom: 10px !important;
+        text-align: center;
+      }
+      .hero-search-btn {
+        width: 100%;
+        padding: 11px 18px;
+        border-radius: var(--radius-sm);
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="position: absolute; width: 1px; height: 1px; overflow: hidden;">ErrandX — campus service marketplace</h2>
+
+<!-- TOAST ZONE -->
+<div class="toast-zone" id="toastZone"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo" onclick="go('home')">ErrandX<span>.</span></div>
+  <div class="nav-links">
+    <button onclick="go('home')" id="nb-home" class="active">Home</button>
+    <button onclick="go('browse')" id="nb-browse">Browse</button>
+    <button onclick="go('dashboard')" id="nb-dashboard">Dashboard</button>
+    <button onclick="go('wallet')" id="nb-wallet">Wallet</button>
+    <button onclick="go('safety')" id="nb-safety">Safety</button>
+    <button onclick="go('admin')" id="nb-admin">Admin</button>
+    <button onclick="go('security')" id="nb-security">🔐 Audit</button>
+    <button class="nav-cta" onclick="showModal('authModal')">Sign In</button>
+  </div>
+</nav>
+
+<!-- ══════════ PAGES ══════════ -->
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <!-- HERO -->
+  <div style="background: var(--brand-dark); color: #fff; padding: 52px 28px; text-align: center; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -50px; right: -50px; width: 260px; height: 260px; background: rgba(249,115,22,.08); border-radius: 50%; pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -80px; left: -40px; width: 340px; height: 340px; background: rgba(255,255,255,.025); border-radius: 50%; pointer-events: none;"></div>
+    <div style="position: relative; z-index: 1;">
+      <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.1); border-radius: 100px; padding: 5px 14px; font-size: 11px; font-weight: 700; margin-bottom: 14px; letter-spacing: .3px;">🇳🇬 CAMPUS-FIRST · TRUST-VERIFIED · ESCROW-PROTECTED</div>
+      <h1 style="font-family: 'Syne', system-ui, sans-serif; font-size: 38px; line-height: 1.1; margin-bottom: 12px;">Get anything done<br>on <span style="color: #FDB97A;">campus</span></h1>
+      <p style="font-size: 15px; color: rgba(255,255,255,.78); max-width: 440px; margin: 0 auto 24px; line-height: 1.6;">Connect with verified students offering tutoring, repairs, food, errands, and more. Safe payments. Real ratings.</p>
+      
+      <div class="hero-search-wrapper">
+        <input id="heroQ" class="hero-search-input" placeholder="What do you need today?" maxlength="80">
+        <button onclick="heroSearch()" class="hero-search-btn" onmouseover="this.style.background='#EA6B0C'" onmouseout="this.style.background='#F97316'">Find Help →</button>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-white btn-sm" onclick="showModal('authModal')">Book a Service</button>
+        <button class="btn btn-ghost-white btn-sm" onclick="showModal('authModal')">Become a Provider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-cell"><div class="stat-n">2,847</div><div class="stat-l">Registered Users</div></div>
+    <div class="stat-cell"><div class="stat-n">438</div><div class="stat-l">Verified Providers</div></div>
+    <div class="stat-cell"><div class="stat-n">5,209</div><div class="stat-l">Jobs Completed</div></div>
+    <div class="stat-cell"><div class="stat-n">4.7★</div><div class="stat-l">Avg Rating</div></div>
+  </div>
+
+  <div style="padding: 30px 0;">
+    <div class="section-hd mb-3"><h2 class="section-title">Browse Categories</h2></div>
+    <div id="homeCatGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 12px; margin-bottom: 34px;"></div>
+    <div class="section-hd"><h2 class="section-title">Top Providers Near You</h2><span class="hd-link" onclick="go('browse')">View all →</span></div>
+    <div class="card-grid mt-3" id="homeProviders"></div>
+    <div style="background: var(--brand-dark); border-radius: var(--radius); padding: 26px 30px; color: #fff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 30px;">
+      <div><h3 style="font-family: 'Syne', system-ui, sans-serif; font-size: 19px; font-weight: 800; margin-bottom: 5px;">Earn on your own schedule</h3><p style="opacity: .75; font-size: 13px; max-width: 300px; line-height: 1.5;">List your skills, get verified, and start earning income from students who need your help.</p></div>
+      <button class="btn btn-accent" onclick="showModal('authModal')">Register as Provider →</button>
+    </div>
+  </div>
+</div>
+
+<!-- BROWSE -->
+<div class="page" id="page-browse">
+  <div style="background: #fff; border-bottom: 1px solid var(--border-light); padding: 18px 20px; margin: -28px -20px 22px;">
+    <div style="max-width: 920px; margin: 0 auto;">
+      <h2 class="section-title mb-3">Find a Service Provider</h2>
+      <div style="display: flex; gap: 8px; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px; margin-bottom: 12px;">
+        <input id="browseQ" style="flex: 1; border: none; outline: none; padding: 7px 10px; font-family: inherit; font-size: 14px; color: var(--text); background: transparent;" placeholder="Search by skill, name, or keyword..." maxlength="80">
+        <button class="btn btn-primary btn-sm" onclick="filterProviders()">Search</button>
+      </div>
+      <div id="browseCats" style="display: flex; gap: 7px; flex-wrap: wrap;"></div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <span class="text-sm text-muted" id="browseCount"></span>
+    <select class="form-select" style="width: auto; padding: 6px 12px; font-size: 12px;" onchange="sortProviders(this.value)">
+      <option value="rating">Highest Rated</option>
+      <option value="price_asc">Price: Low → High</option>
+      <option value="price_desc">Price: High → Low</option>
+    </select>
+  </div>
+  <div class="card-grid" id="providerGrid"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="page-dashboard">
+  <div class="section-hd mb-1">
+    <div><h2 class="section-title">My Dashboard</h2><p class="text-sm text-muted">Welcome back, Emmanuel 👋</p></div>
+    <div style="display: flex; gap: 6px;"><span class="badge badge-green">✓ ID Verified</span><span class="badge badge-blue">⭐ 4.9 Rating</span></div>
+  </div>
+  <div class="tabs mb-4" id="dashTabs">
+    <div class="tab active" onclick="dashTab('client')">Client View</div>
+    <div class="tab" onclick="dashTab('provider')">Provider View</div>
+  </div>
+  <div id="dashClient">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; margin-bottom: 20px;">
+      <div class="metric-card"><div class="metric-num" style="color: var(--brand);">3</div><div class="metric-label">Active Bookings</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--success);">18</div><div class="metric-label">Jobs Completed</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--text);">₦63k</div><div class="metric-label">Total Spent</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--warn);">₦10.5k</div><div class="metric-label">In Escrow</div></div>
+    </div>
+    <div class="card mb-4">
+      <div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Active Bookings</h3><button class="btn btn-accent btn-sm" onclick="showModal('bookModal')">+ New Booking</button></div>
+      <div style="overflow-x: auto;"><table class="tbl" id="tblActive"></table></div>
+    </div>
+    <div class="card">
+      <div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Booking History</h3></div>
+      <div style="overflow-x: auto;"><table class="tbl" id="tblHistory"></table></div>
+    </div>
+  </div>
+  <div id="dashProvider" style="display: none;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; margin-bottom: 20px;">
+      <div class="metric-card"><div class="metric-num" style="color: var(--success);">₦84k</div><div class="metric-label">Total Earned</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--warn);">₦12k</div><div class="metric-label">Pending Payout</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--brand);">64</div><div class="metric-label">Jobs Done</div></div>
+      <div class="metric-card"><div class="metric-num" style="color: var(--accent);">4.9★</div><div class="metric-label">Avg Rating</div></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px;">
+      <div class="card">
+        <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Earnings — Last 7 Days</h3>
+        <div id="earningsBar" style="height: 110px; display: flex; align-items: flex-end; gap: 5px;"></div>
+        <div id="earningsLabels" style="display: flex; justify-content: space-around; margin-top: 5px;"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Profile Strength</h3>
+        <div class="tl">
+          <div class="tl-item done"><div class="text-sm font-med">ID Verified</div><div class="text-xs text-muted">Complete</div></div>
+          <div class="tl-item done"><div class="text-sm font-med">Profile Photo</div><div class="text-xs text-muted">Complete</div></div>
+          <div class="tl-item current"><div class="text-sm font-med">Portfolio</div><div class="text-xs text-muted">Add 3 photos</div></div>
+          <div class="tl-item pending"><div class="text-sm font-med">Background Check</div><div class="text-xs text-muted">Earn Vetted badge</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Incoming Requests</h3></div>
+      <table class="tbl">
+        <thead><tr><th>Client</th><th>Service</th><th>When</th><th>Offer</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><div class="flex items-center gap-2"><div class="av av-sm" style="background: var(--info-bg); color: var(--info-text);">AO</div>Ada Okafor</div></td><td>Calculus Tutoring</td><td>Today 4pm</td><td class="font-med">₦4,000</td><td style="display: flex; gap: 5px;"><button class="btn btn-success btn-xs" onclick="toast('Request accepted! Client notified.','success')">Accept</button><button class="btn btn-slate btn-xs" onclick="toast('Request declined.','info')">Decline</button></td></tr>
+          <tr><td><div class="flex items-center gap-2"><div class="av av-sm" style="background: var(--success-bg); color: var(--success-text);">TF</div>Tunde F.</div></td><td>Phone Screen Repair</td><td>Tomorrow 10am</td><td class="font-med">₦3,500</td><td style="display: flex; gap: 5px;"><button class="btn btn-success btn-xs" onclick="toast('Request accepted!','success')">Accept</button><button class="btn btn-slate btn-xs" onclick="toast('Declined.','info')">Decline</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- WALLET -->
+<div class="page" id="page-wallet">
+  <h2 class="section-title mb-4">ErrandX Wallet</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+    <div class="wallet-hero">
+      <div class="wallet-lbl">Available Balance</div>
+      <div class="wallet-bal">₦24,350</div>
+      <div style="font-size: 11px; opacity: .5; margin-top: 4px;">Last topped up: Today</div>
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button class="wbtn" onclick="toast('Paystack checkout opening… (Sandbox)','info')">+ Top Up</button>
+        <button class="wbtn" onclick="toast('Withdrawal submitted. Transfer in 1–2 business days.','success')">Withdraw</button>
+      </div>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--warn);">
+      <div class="text-xs text-muted font-med mb-1" style="text-transform: uppercase; letter-spacing: .4px;">Held in Escrow</div>
+      <div style="font-family: 'Syne', system-ui, sans-serif; font-size: 30px; font-weight: 800; color: var(--warn);">₦10,500</div>
+      <div class="text-xs text-muted mt-1">2 active bookings</div>
+      <div class="divider"></div>
+      <p class="text-xs text-muted" style="line-height: 1.6;">Escrow releases to providers only after you confirm job completion.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Transaction History</h3></div>
+    <div style="overflow-x: auto;"><table class="tbl" id="tblTx"></table></div>
+  </div>
+</div>
+
+<!-- SAFETY -->
+<div class="page" id="page-safety">
+  <h2 class="section-title mb-1">Safety Centre</h2>
+  <p class="text-sm text-muted mb-4">Your security is our top priority on every booking.</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-bottom: 22px;">
+    <div class="card" style="border-left: 4px solid var(--danger); border-radius: 0 var(--radius) var(--radius) 0;">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--danger); margin-bottom: 8px;">🆘 SOS Emergency</h3>
+      <p class="text-sm text-muted mb-4" style="line-height: 1.6;">If you feel unsafe during a booking, press SOS. Your emergency contact and ErrandX support will be alerted instantly.</p>
+      <button class="sos-btn" onclick="triggerSOS()">SOS</button>
+      <p class="text-xs text-faint mt-3 text-center">Only use in genuine emergencies</p>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--warn); border-radius: 0 var(--radius) var(--radius) 0;">
+      <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">📍 Live Location Sharing</h3>
+      <p class="text-sm text-muted mb-3" style="line-height: 1.5;">During active bookings your location is shared with your emergency contact.</p>
+      <div style="background: var(--success-bg); border-radius: var(--radius-sm); padding: 10px; font-size: 12px; color: var(--success-text); margin-bottom: 12px; font-weight: 600;">● ACTIVE — Job #EX-20264</div>
+      <button class="btn btn-slate btn-sm btn-full" onclick="toast('Location sharing settings updated.','info')">Manage Settings</button>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--brand); border-radius: 0 var(--radius) var(--radius) 0;">
+      <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">⚖️ Raise a Dispute</h3>
+      <p class="text-sm text-muted mb-3" style="line-height: 1.5;">Job not completed? Payment issue? Our team resolves disputes within 24 hours.</p>
+      <button class="btn btn-danger btn-sm btn-full" onclick="showModal('disputeModal')">Open Dispute</button>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px;">🛡️ Six-Layer Safety Architecture</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="flex gap-2"><span style="font-size: 17px;">✅</span><div><div class="text-sm font-med">Mandatory ID Verification</div><div class="text-xs text-muted">Govt ID or Student ID + live selfie</div></div></div>
+      <div class="flex gap-2"><span style="font-size: 17px;">🔒</span><div><div class="text-sm font-med">Escrow Payments</div><div class="text-xs text-muted">Funds released only after confirmation</div></div></div>
+      <div class="flex gap-2"><span style="font-size: 17px;">📍</span><div><div class="text-sm font-med">Live Location Sharing</div><div class="text-xs text-muted">Auto check-ins if session overruns</div></div></div>
+      <div class="flex gap-2"><span style="font-size: 17px;">⭐</span><div><div class="text-sm font-med font-med">Ratings & Reviews</div><div class="text-xs text-muted">Every job rated — full accountability</div></div></div>
+      <div class="flex gap-2"><span style="font-size: 17px;">🚨</span><div><div class="text-sm font-med font-med">Community Reporting</div><div class="text-xs text-muted">Auto freeze after repeated complaints</div></div></div>
+      <div class="flex gap-2"><span style="font-size: 17px;">📋</span><div><div class="text-sm font-med font-med">Completion Photos</div><div class="text-xs text-muted">Evidence trail before any payout</div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">🚩 Report a User</h3>
+    <div class="form-group"><label class="form-label">Username or Profile ID</label><input class="form-input" id="reportUser" placeholder="@username or EX-94821" maxlength="60"></div>
+    <div class="form-group"><label class="form-label">Report type</label>
+      <select class="form-select" id="reportType"><option value="">Select type</option><option>Fraud / Scam</option><option>Safety threat</option><option>Harassment</option><option>Fake profile</option><option>Stolen property</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Details</label><textarea class="form-input" id="reportDetails" rows="3" placeholder="Describe the incident…" maxlength="1000"></textarea></div>
+    <button class="btn btn-danger" onclick="submitReport()">Submit Report</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="section-hd mb-1"><div><h2 class="section-title">Admin Panel</h2><p class="text-sm text-muted">ErrandX Internal Dashboard</p></div><span class="badge badge-red">🔴 Admin Only</span></div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; margin-bottom: 20px;">
+    <div class="metric-card"><div class="metric-num" style="color: var(--brand);">2,847</div><div class="metric-label">Total Users</div><div style="font-size: 11px; color: var(--success); margin-top: 4px; font-weight: 600;">↑ +43 this week</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--warn);">14</div><div class="metric-label">Pending Verif.</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--danger);">3</div><div class="metric-label">Open Disputes</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--success);">₦681k</div><div class="metric-label">Month Revenue</div></div>
+  </div>
+  <div class="tabs" id="adminTabs">
+    <div class="tab active" onclick="adminTab('verif')">Verifications</div>
+    <div class="tab" onclick="adminTab('disputes')">Disputes</div>
+    <div class="tab" onclick="adminTab('users')">Users</div>
+    <div class="tab" onclick="adminTab('analytics')">Analytics</div>
+  </div>
+  <div id="adminVerif"><div class="card"><div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Pending Verifications</h3><span class="badge badge-orange">14 pending</span></div><div style="overflow-x: auto;"><table class="tbl" id="tblVerif"></table></div></div></div>
+  <div id="adminDisputes" style="display: none;"><div class="card"><div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">Active Disputes</h3></div>
+    <table class="tbl"><thead><tr><th>Ref</th><th>Raised By</th><th>Against</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <tr><td>#EX-D001</td><td>Ada O.</td><td>Musa T.</td><td>Job not completed</td><td><span class="badge badge-orange">Under Review</span></td><td><button class="btn btn-primary btn-xs" onclick="toast('Dispute #EX-D001 resolved — refund issued.','success')">Resolve</button></td></tr>
+      <tr><td>#EX-D002</td><td>Chidi E.</td><td>Aisha K.</td><td>Poor quality</td><td><span class="badge badge-orange">Under Review</span></td><td><button class="btn btn-primary btn-xs" onclick="toast('Dispute #EX-D002 resolved.','success')">Resolve</button></td></tr>
+      <tr><td>#EX-D003</td><td>Lola A.</td><td>Seun M.</td><td>Pricing issue</td><td><span class="badge badge-gray">New</span></td><td><button class="btn btn-primary btn-xs" onclick="toast('Dispute #EX-D003 resolved.','success')">Resolve</button></td></tr>
+    </tbody></table>
+  </div></div>
+  <div id="adminUsers" style="display: none;"><div class="card"><div class="section-hd mb-3"><h3 style="font-size: 15px; font-weight: 700;">All Users</h3></div><div style="overflow-x: auto;"><table class="tbl" id="tblUsers"></table></div></div></div>
+  <div id="adminAnalytics" style="display: none;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="card"><h3 style="font-size: 14px; font-weight: 700; margin-bottom: 14px;">Revenue by Category</h3><div id="revChart"></div></div>
+      <div class="card"><h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">User Growth</h3><div id="growthBar" style="height: 120px; display: flex; align-items: flex-end; gap: 5px;"></div><div id="growthLabels" style="display: flex; justify-content: space-around; margin-top: 5px;"></div></div>
+      <div class="card" style="grid-column: 1/-1;"><h3 style="font-size: 14px; font-weight: 700; margin-bottom: 14px;">Platform Health</h3>
+        <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;">
+          <div><div class="text-xs text-muted font-med mb-1" style="text-transform: uppercase; letter-spacing: .3px;">Booking Success Rate</div><div class="prog-bar mt-1"><div class="prog-fill" style="width: 94%; background: var(--success);"></div></div><div class="text-sm font-med mt-1">94%</div></div>
+          <div><div class="text-xs text-muted font-med mb-1" style="text-transform: uppercase; letter-spacing: .3px;">Dispute Rate</div><div class="prog-bar mt-1"><div class="prog-fill" style="width: 3%; background: var(--warn);"></div></div><div class="text-sm font-med mt-1">2.1%</div></div>
+          <div><div class="text-xs text-muted font-med mb-1" style="text-transform: uppercase; letter-spacing: .3px;">Provider Retention</div><div class="prog-bar mt-1"><div class="prog-fill" style="width: 87%; background: var(--brand);"></div></div><div class="text-sm font-med mt-1">87%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECURITY AUDIT -->
+<div class="page" id="page-security">
+  <h2 class="section-title mb-1">🔐 Security Audit Report</h2>
+  <p class="text-sm text-muted mb-4">Codebase scan — vulnerabilities, mitigations, and environment variable policy.</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; margin-bottom: 22px;">
+    <div class="metric-card"><div class="metric-num" style="color: var(--success);">0</div><div class="metric-label">Critical Issues</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--warn);">0</div><div class="metric-label">Hardcoded Keys</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--success);">10/10</div><div class="metric-label">Controls Passed</div></div>
+    <div class="metric-card"><div class="metric-num" style="color: var(--brand);">A+</div><div class="metric-label">Security Grade</div></div>
+  </div>
+
+  <div class="card mb-4">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">🛑 Rate Limiting — Login Endpoint</h3>
+    <div class="info-box">🔒 Max 5 login attempts per IP per 15 minutes. Lockout triggers on the 6th attempt. Counter resets after the window expires.</div>
+    <div class="text-xs text-muted font-med mb-2" style="text-transform: uppercase; letter-spacing: .4px;">Simulate Login Attempts</div>
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px;">
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2);"><div class="rl-dot" id="rlDot"></div><span id="rlStatus">0 / 5 attempts used</span></div>
+      <button class="btn btn-warn btn-sm" onclick="simulateAttempt()">Simulate Failed Login</button>
+      <button class="btn btn-slate btn-sm" onclick="resetAttempts()">Reset Window</button>
+    </div>
+    <div class="prog-bar mb-2"><div class="prog-fill" id="rlFill" style="width: 0%; background: var(--success);"></div></div>
+    <div id="rlLockMsg" style="display: none;" class="warn-box mt-2">⛔ Locked for <span id="rlCountdown">15:00</span> — too many failed attempts.</div>
+    <div style="background: var(--surface2); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px;">
+      <div class="text-xs text-muted font-med mb-2" style="text-transform: uppercase; letter-spacing: .3px;">Express.js Implementation</div>
+      <pre style="font-family: monospace; font-size: 11px; color: var(--text); line-height: 1.65; overflow-x: auto;">const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 5,
+  message: { error: 'Too many login attempts. Try again in 15 minutes.' },
+  standardHeaders: true,
+  keyGenerator: (req) => req.ip + ':login',
+});
+
+app.post('/api/auth/login', loginLimiter, loginController);</pre>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">🔑 API Key Scan — Zero Findings</h3>
+    <div class="info-box">✅ No hardcoded secrets found in any frontend file. All sensitive values are server-side environment variables only.</div>
+    <div id="auditItems"></div>
+  </div>
+
+  <div class="card mb-4">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">🌍 Environment Variables — .env Template</h3>
+    <div class="warn-box">⚠️ Never commit .env to Git. Add to .gitignore before first commit. Share .env.example (with placeholder values) for onboarding.</div>
+    <pre style="font-family: monospace; font-size: 11px; color: var(--text); line-height: 1.7; background: var(--surface2); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 16px; overflow-x: auto;"># ERRANDX .env.example — copy to .env and fill in real values
+
+DATABASE_URL=postgresql://user:password@host:5432/errandx_db
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
+
+JWT_SECRET=replace_with_64_char_random_string
+JWT_EXPIRES_IN=7d
+
+GOOGLE_MAPS_API_KEY=your_google_maps_key
+SMILE_PARTNER_ID=your_smile_partner_id
+SMILE_API_KEY=your_smile_api_key</pre>
+  </div>
+
+  <div class="card mb-4">
+    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 12px;">🧹 Input Sanitization — Live Demo</h3>
+    <div style="display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;">
+      <input class="form-input" id="sanitizeInput" placeholder='Try: &lt;script&gt;alert("xss")&lt;/script&gt;' style="flex: 1;" oninput="showSanitized()">
+      <button class="btn btn-primary btn-sm" onclick="showSanitized()">Sanitize</button>
+    </div>
+    <div id="sanitizeOut" style="font-size: 12px; color: var(--text2); min-height: 20px;"></div>
+  </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer style="background: var(--brand-dark); color: rgba(255,255,255,0.78); padding: 50px 20px 40px; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px;">
+  <div style="max-width: 920px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;">
+      
+      <div>
+        <h4 style="font-family: 'Syne', system-ui, sans-serif; font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 15px;">ErrandX<span>.</span></h4>
+        <p style="line-height: 1.6; color: rgba(255,255,255,0.65);">
+          Award-winning Entrepreneurship Startup Group 15 Bowen university pilot MVP. On-demand campus service &amp; escrow-protected trade pipeline. Academic Year 2025/2026.
+        </p>
+      </div>
+
+      <div>
+        <h4 style="font-family: 'Syne', system-ui, sans-serif; font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 15px;">Service Sectors</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; font-size: 12.5px; opacity: 0.85;">
+          <li style="margin-bottom: 8px;">Calculus &amp; Study Tutorials</li>
+          <li style="margin-bottom: 8px;">Hostel Laundry &amp; Ironing</li>
+          <li style="margin-bottom: 8px;">Hardware &amp; Laptop Repair</li>
+          <li style="margin-bottom: 8px;">Meal Prep &amp; Food Delivery</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-family: 'Syne', system-ui, sans-serif; font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 15px;">Protection Layers</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; font-size: 12.5px; opacity: 0.85;">
+          <li style="margin-bottom: 8px;">✓ Secure Paystack escrow hold</li>
+          <li style="margin-bottom: 8px;">✓ OTP live mobile phone match</li>
+          <li style="margin-bottom: 8px;">✓ Verified student matric database</li>
+          <li style="margin-bottom: 8px;">✓ 24hr arbitration dispute panel</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-family: 'Syne', system-ui, sans-serif; font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 15px;">Group Co-Founders</h4>
+        <p style="line-height: 1.6; color: rgba(255,255,255,0.65);">
+          Emmanuel Adebagbo (#BU22LAW1001), Gideon Adeosun, Fehintoluwa, and colleagues of Bowen group 15, Course code: EES 402.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════ MODALS LIST ══════════ -->
+
+<!-- AUTH -->
+<div class="modal-wrap" id="authModal">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="authTitle">Welcome back</div><button class="modal-close" onclick="hideModal('authModal')">✕</button></div>
+    <div id="loginForm">
+      <div class="form-group"><label class="form-label">Email address</label><input class="form-input" type="email" id="lgEmail" placeholder="you@uni.edu.ng" maxlength="254"><div class="err-msg" id="lgEmailErr">Enter a valid email address.</div></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="lgPwd" placeholder="••••••••" maxlength="128"><div class="err-msg" id="lgPwdErr">Password is required.</div></div>
+      <div id="rlWarning" style="display: none;" class="warn-box mt-2 mb-2">⚠️ <span id="rlWarnText">Warning: limited attempts remaining.</span></div>
+      <button class="btn btn-primary btn-full mt-3" onclick="doLogin()">Sign in to ErrandX</button>
+      <p class="mt-3 text-center text-sm text-muted">No account? <a href="#" onclick="switchView('signup')" style="color: var(--brand); font-weight: 600;">Sign up free</a></p>
+    </div>
+    <div id="signupForm" style="display: none;">
+      <div class="tabs" style="margin-bottom: 14px;" id="signupTabs">
+        <div class="tab active" onclick="setRole('client')">I need services</div>
+        <div class="tab" onclick="setRole('provider')">I offer services</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First name</label><input class="form-input" id="sgFirst" placeholder="Ada" maxlength="60"></div>
+        <div class="form-group"><label class="form-label">Last name</label><input class="form-input" id="sgLast" placeholder="Okafor" maxlength="60"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="sgEmail" placeholder="you@uni.edu.ng" maxlength="254"></div>
+      <div class="form-group"><label class="form-label">Phone (WhatsApp)</label><input class="form-input" type="tel" id="sgPhone" placeholder="+234 810 000 0000" maxlength="15"></div>
+      <div class="form-group"><label class="form-label">Password (min 8 chars)</label><input class="form-input" type="password" id="sgPwd" placeholder="Create a strong password" maxlength="128"></div>
+      <div id="providerFields" style="display: none;">
+        <div class="form-group"><label class="form-label">Primary skill</label>
+          <select class="form-select" id="sgSkill"><option value="">Select category</option><option>Tutoring</option><option>Food & Cooking</option><option>Repairs & Tech</option><option>Laundry & Cleaning</option><option>Hair & Beauty</option><option>Delivery & Errands</option><option>Photography</option><option>Graphic Design</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Matriculation No.</label><input class="form-input" id="sgMatric" placeholder="BU22LAW1001" maxlength="20"></div>
+      </div>
+      <button class="btn btn-accent btn-full" onclick="doSignup()">Create my ErrandX account</button>
+      <p class="mt-2 text-center text-sm text-muted">Already have an account? <a href="#" onclick="switchView('login')" style="color: var(--brand); font-weight: 600;">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK -->
+<div class="modal-wrap" id="bookModal">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="bookTitle">Book a Service</div><button class="modal-close" onclick="hideModal('bookModal')">✕</button></div>
+    <div id="bookStep1">
+      <div class="form-group"><label class="form-label">Service needed</label><input class="form-input" id="bkDesc" placeholder="e.g. Help with Land Law revision" maxlength="200"></div>
+      <div class="form-group"><label class="form-label">Date & Time</label><input class="form-input" type="datetime-local" id="bkDate"></div>
+      <div class="form-group"><label class="form-label">Location on campus</label><input class="form-input" id="bkLoc" placeholder="e.g. Faculty of Law, Block B" maxlength="150"></div>
+      <div class="form-group"><label class="form-label">Agreed price (₦)</label><input class="form-input" type="number" id="bkPrice" placeholder="3500" min="100" max="500000"></div>
+      <div class="form-group"><label class="form-label">Additional notes</label><textarea class="form-input" id="bkNotes" rows="3" placeholder="Any special instructions…" maxlength="1000"></textarea></div>
+      <button class="btn btn-primary btn-full mt-2" onclick="bookNext()">Proceed to Escrow →</button>
+    </div>
+    <div id="bookStep2" style="display: none;">
+      <div style="background: var(--surface2); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 14px;">
+        <div class="flex justify-between mb-2"><span class="text-sm text-muted">Service fee</span><span class="text-sm font-med" id="bkAmt">₦3,500</span></div>
+        <div class="flex justify-between mb-2"><span class="text-sm text-muted">ErrandX commission (12.5%)</span><span class="text-sm" id="bkComm">₦437</span></div>
+        <div class="divider" style="margin: 8px 0;"></div>
+        <div class="flex justify-between"><span class="font-med text-sm">Total held in escrow</span><span style="font-weight: 700;" id="bkTotal">₦3,500</span></div>
+      </div>
+      <div class="info-box">🔒 Payment is held securely in escrow and released only after you mark completion.</div>
+      <button class="btn btn-accent btn-full mt-2" onclick="confirmBook()">Confirm & Pay (Paystack Sandbox)</button>
+      <button class="btn btn-slate btn-full mt-2" onclick="bookBack()">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- RATING -->
+<div class="modal-wrap" id="ratingModal">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">Rate your experience</div><button class="modal-close" onclick="hideModal('ratingModal')">✕</button></div>
+    <div class="text-center mb-4">
+      <p class="text-sm text-muted mb-3">How was the service?</p>
+      <div class="stars" style="justify-content: center;" id="starRow">
+        <span class="star on" onclick="setRating(1)">★</span><span class="star on" onclick="setRating(2)">★</span><span class="star on" onclick="setRating(3)">★</span><span class="star on" onclick="setRating(4)">★</span><span class="star" onclick="setRating(5)">★</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Tell us more (optional)</label><textarea class="form-input" rows="3" placeholder="Share your experience…" maxlength="500"></textarea></div>
+    <button class="btn btn-primary btn-full" onclick="submitRating()">Submit Review</button>
+  </div>
+</div>
+
+<!-- DISPUTE -->
+<div class="modal-wrap" id="disputeModal">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">Raise a Dispute</div><button class="modal-close" onclick="hideModal('disputeModal')">✕</button></div>
+    <div class="warn-box">⚠️ Disputes must be raised within 2 hours. Escrow will stay locked until resolved (max 24 hrs).</div>
+    <div class="form-group"><label class="form-label">Booking reference</label><input class="form-input" id="dRef" placeholder="#EX-20264" maxlength="20"></div>
+    <div class="form-group"><label class="form-label">Reason</label>
+      <select class="form-select" id="dReason"><option value="">Select reason</option><option>Job not completed</option><option>Poor quality of work</option><option>Provider didn't show up</option><option>Safety concern</option><option>Pricing disagreement</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="dDesc" rows="4" placeholder="Describe what happened…" maxlength="1000"></textarea></div>
+    <button class="btn btn-danger btn-full" onclick="submitDispute()">Submit Dispute</button>
+  </div>
+</div>
+
+<!-- PROVIDER PROFILE -->
+<div class="modal-wrap" id="providerModal">
+  <div class="modal" style="max-width: 500px;">
+    <div class="modal-hd"><div class="modal-title" id="pmName">Provider</div><button class="modal-close" onclick="hideModal('providerModal')">✕</button></div>
+    <div id="pmBody"></div>
+  </div>
+</div>
+
+<script>
+const CATS=[{e:'📚',n:'Tutoring',c:'#EEF4FF'},{e:'🍳',n:'Food & Cooking',c:'#FEF3E8'},{e:'🔧',n:'Repairs & Tech',c:'#F0FDF4'},{e:'👗',n:'Laundry',c:'#FAF5FF'},{e:'💇',n:'Hair & Beauty',c:'#FFF7ED'},{e:'🛵',n:'Delivery',c:'#F0F9FF'},{e:'📸',n:'Photography',c:'#FEF2F2'},{e:'🎨',n:'Design',c:'#ECFDF5'}];
+const PROVIDERS=[
+  {id:1,n:'Adaeze Nwachukwu',cat:'Tutoring',e:'📚',r:4.9,j:42,p:'₦2,000/hr',ver:true,vet:true,bio:'400-level Mathematics student. Specialise in Calculus, Stats, and Physics.',sk:['Mathematics','Statistics','Physics']},
+  {id:2,n:'Chukwuemeka Obi',cat:'Repairs & Tech',e:'🔧',r:4.8,j:67,p:'₦3,000/job',ver:true,vet:false,bio:'Electronics engineering student. Laptop repairs, screen configurations.',sk:['Phone Repair','Laptop Fixes']},
+  {id:3,n:'Fatima Al-Hassan',cat:'Food & Cooking',e:'🍳',r:4.9,j:89,p:'₦1,500/meal',ver:true,vet:true,bio:'Jollof cooking master. Hostel meal planning and delivery.',sk:['Jollof Cooking','Continental Meal']},
+  {id:4,n:'Tunde Akinwale',cat:'Hair & Beauty',e:'💇',r:4.7,j:31,p:'₦2,500/session',ver:true,vet:false,bio:'Skilled professional barber and hair stylist.',sk:['Barbing','Weaving']},
+];
+const TX=[
+  {d:'May 28, 2026',desc:'Booking #EX-20264 — Tutoring',type:'Escrow Hold',amt:'-₦4,000',s:'held'},
+  {d:'May 27, 2026',desc:'Booking #EX-20261 — Laundry',type:'Released',amt:'-₦1,500',s:'done'},
+  {d:'May 26, 2026',desc:'Wallet Top-Up via Paystack',type:'Top-Up',amt:'+₦10,000',s:'done'},
+];
+const VERIF=[{n:'Sola Fashola',cat:'Tutoring',id:'✓ Student ID',m:'BU22ENG1044'},{n:'Mercy Peters',cat:'Hair & Beauty',id:'✓ Govt NIN',m:'BU23LAW1009'}];
+const USERS=[{n:'Ada Okafor',t:'Client',v:'Yes',j:'Jan 2026',s:'Active'},{n:'Emmanuel Adebagbo',t:'Provider',v:'Yes',j:'Feb 2026',s:'Active'}];
+const AUDIT=[
+  {icon:'✅',label:'Paystack keys',detail:'PAYSTACK_SECRET_KEY in process.env — zero exposure in client code.'},
+  {icon:'✅',label:'Supabase credentials',detail:'SERVICE_ROLE_KEY server-only; ANON_KEY safely loaded on need.'},
+  {icon:'✅',label:'JWT secret',detail:'In .env — never exposed to client.'},
+];
+
+let activeCat=null,currentRating=4,loginAttempts=0,lockUntil=null,signupRole='client';
+let demoAttempts=0,demoLocked=false,cInt=null;
+
+function s(str){if(!str||typeof str!=='string')return'';return str.replace(/[<>"'`]/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;','`':'&#x60;'}[c])).trim();}
+function validateEmail(e){return/^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/.test(e.trim());}
+
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-links button:not(.nav-cta)').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nb-'+page);
+  if(nb)nb.classList.add('active');
+  if(page==='browse')initBrowse();
+  if(page==='dashboard')initDash();
+  if(page==='wallet')initWallet();
+  if(page==='admin')initAdmin();
+  if(page==='security')initSecurity();
+}
+
+function showModal(id){document.getElementById(id).style.display='flex';}
+function hideModal(id){document.getElementById(id).style.display='none';}
+
+function toast(msg,type='info'){
+  const z=document.getElementById('toastZone');
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  const ico={success:'✅',error:'❌',info:'ℹ️',warn:'⚠️'};
+  t.innerHTML=`<span>${ico[type]||'ℹ️'}</span><span>${s(msg)}</span>`;
+  z.appendChild(t);
+  setTimeout(()=>t.remove(),3800);
+}
+
+function initHome(){
+  document.getElementById('homeCatGrid').innerHTML=CATS.map(c=>`<div onclick="go('browse');filterByCat('${c.n}')" style="background:${c.c};border-radius:var(--radius);padding:16px 10px;text-align:center;cursor:pointer;border:1px solid rgba(0,0,0,.06);transition:transform .2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''"><div style="font-size:24px;margin-bottom:5px;">${c.e}</div><div style="font-size:11px;font-weight:700;color:var(--text);">${c.n}</div></div>`).join('');
+  document.getElementById('homeProviders').innerHTML=PROVIDERS.slice(0,4).map(pCard).join('');
+}
+
+function initBrowse(){
+  const bc=document.getElementById('browseCats');
+  if(!bc.children.length)bc.innerHTML=`<span class="cat-chip active" onclick="filterByCat(null)">All</span>`+CATS.map(c=>`<span class="cat-chip" onclick="filterByCat('${c.n}')">${c.e} ${c.n}</span>`).join('');
+  filterProviders();
+}
+function filterByCat(cat){
+  activeCat=cat;
+  document.querySelectorAll('#browseCats .cat-chip').forEach(ch=>ch.classList.toggle('active',cat===null?ch.textContent.trim()==='All':ch.textContent.includes(cat)));
+  filterProviders();
+}
+function filterProviders(){
+  const q=s((document.getElementById('browseQ')||{}).value||'').toLowerCase();
+  const list=PROVIDERS.filter(p=>(!activeCat||p.cat===activeCat)&&(!q||p.n.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
+  document.getElementById('browseCount').textContent=list.length+' provider'+(list.length!==1?'s':'')+' found';
+  document.getElementById('providerGrid').innerHTML=list.length?list.map(pCard).join(''):`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);">🔍 No providers found.</div>`;
+}
+function sortProviders(by){
+  const list=[...PROVIDERS].sort((a,b)=>by==='rating'?b.r-a.r:by==='price_asc'?parseInt(a.p)-parseInt(b.p):parseInt(b.p)-parseInt(a.p));
+  document.getElementById('providerGrid').innerHTML=list.map(pCard).join('');
+}
+function pCard(p){
+  return `<div class="p-card" onclick="openProvider(${p.id})">
+    <div class="p-card-hd">${p.e}</div>
+    <div class="p-card-bd">
+      <div class="flex items-center gap-2 mb-1"><div class="p-card-name">${s(p.n)}</div>${p.ver?'<span title="ID Verified" style="font-size:12px;">✅</span>':''}${p.vet?'<span class="badge badge-blue" style="font-size:10px;padding:2px 6px;">Vetted</span>':''}</div>
+      <div class="p-card-cat">${s(p.cat)} · ${p.j} jobs</div>
+      <div class="p-card-ft"><div class="rating">★ ${p.r}</div><div class="price">${s(p.p)}</div></div>
+    </div>
+  </div>`;
+}
+function openProvider(id){
+  const p=PROVIDERS.find(x=>x.id===id);if(!p)return;
+  document.getElementById('pmName').textContent=p.n;
+  document.getElementById('pmBody').innerHTML=`
+    <div class="flex items-center gap-3 mb-4"><div style="width:56px;height:56px;background:var(--brand-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;">${p.e}</div><div><div class="flex items-center gap-2"><strong style="font-size:15px;">${s(p.n)}</strong>${p.ver?'<span>✅</span>':''}</div><div class="flex gap-2 mt-1"><span class="badge badge-blue">${s(p.cat)}</span>${p.vet?'<span class="badge badge-green">Vetted</span>':''}<span class="badge badge-gray">★${p.r} · ${p.j} jobs</span></div></div></div>
+    <p class="text-sm text-muted mb-3" style="line-height:1.6;">${s(p.bio)}</p>
+    <div class="mb-3"><div class="text-xs text-muted font-med mb-2" style="text-transform:uppercase;letter-spacing:.4px;">Skills</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${p.sk.map(x=>`<span class="badge badge-gray">${s(x)}</span>`).join('')}</div></div>
+    <div class="divider"></div>
+    <div class="flex justify-between items-center"><div class="text-sm"><span class="text-muted">Starting from </span><strong>${s(p.p)}</strong></div><button class="btn btn-accent btn-sm" onclick="hideModal('providerModal');document.getElementById('bookTitle').textContent='Book — ${s(p.n)}';showModal('bookModal');">Book Now</button></div>`;
+  showModal('providerModal');
+}
+function heroSearch(){const q=s(document.getElementById('heroQ').value);if(q){const bq=document.getElementById('browseQ');if(bq)bq.value=q;}go('browse');filterProviders();}
+
+function switchView(v){
+  document.getElementById('loginForm').style.display=v==='login'?'block':'none';
+  document.getElementById('signupForm').style.display=v==='signup'?'block':'none';
+  document.getElementById('authTitle').textContent=v==='login'?'Welcome back':'Create your account';
+}
+function setRole(r){
+  signupRole=r;
+  document.querySelectorAll('#signupTabs .tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='client'?0:1)));
+  document.getElementById('providerFields').style.display=r==='provider'?'block':'none';
+}
+function doLogin(){
+  if(lockUntil&&Date.now()<lockUntil){toast('Account locked. Wait for the timer.','warn');return;}
+  const email=document.getElementById('lgEmail').value.trim();
+  const pwd=document.getElementById('lgPwd').value;
+  let ok=true;
+  if(!validateEmail(email)){document.getElementById('lgEmailErr').style.display='block';ok=false;}else document.getElementById('lgEmailErr').style.display='none';
+  if(!pwd){document.getElementById('lgPwdErr').style.display='block';ok=false;}else document.getElementById('lgPwdErr').style.display='none';
+  if(!ok)return;
+  loginAttempts++;
+  if(loginAttempts>=5){lockUntil=Date.now()+15*60*1000;document.getElementById('rlWarning').style.display='flex';document.getElementById('rlWarnText').textContent='Too many failed attempts. Account locked for 15 minutes.';toast('Locked for 15 minutes.','error');return;}
+  hideModal('authModal');loginAttempts=0;
+  toast('Welcome back to ErrandX! 🎉','success');
+}
+function doSignup(){
+  const f=document.getElementById('sgFirst').value.trim(),l=document.getElementById('sgLast').value.trim(),e=document.getElementById('sgEmail').value.trim(),ph=document.getElementById('sgPhone').value.trim(),pw=document.getElementById('sgPwd').value;
+  if(!f||!l||!e||!ph||!pw){toast('Please fill in all required fields.','error');return;}
+  if(!validateEmail(e)){toast('Enter a valid email address.','error');return;}
+  hideModal('authModal');toast('Account created! Check your email to verify. 📧','success');
+}
+
+function simulateAttempt(){
+  if(demoLocked){toast('Demo locked — reset to continue.','warn');return;}
+  demoAttempts++;
+  const pct=Math.min(demoAttempts/5*100,100);
+  document.getElementById('rlFill').style.width=pct+'%';
+  document.getElementById('rlFill').style.background=demoAttempts>=5?'var(--danger)':demoAttempts>=3?'var(--warn)':'var(--success)';
+  const dot=document.getElementById('rlDot');dot.className='rl-dot'+(demoAttempts>=5?' danger':demoAttempts>=3?' warn':'');
+  document.getElementById('rlStatus').textContent=demoAttempts+' / 5 attempts used';
+  if(demoAttempts>=5){demoLocked=true;document.getElementById('rlLockMsg').style.display='flex';toast('Rate limit hit — login locked for 15 minutes.','error');}
+  else toast('Failed attempt '+demoAttempts+' of 5 recorded.','warn');
+}
+function resetAttempts(){
+  demoAttempts=0;demoLocked=false;if(cInt)clearInterval(cInt);
+  document.getElementById('rlFill').style.width='0%';document.getElementById('rlFill').style.background='var(--success)';
+  document.getElementById('rlDot').className='rl-dot';document.getElementById('rlStatus').textContent='0 / 5 attempts used';
+  document.getElementById('rlLockMsg').style.display='none';toast('Rate limit window reset.','info');
+}
+function showSanitized(){
+  const raw=document.getElementById('sanitizeInput').value;const clean=s(raw);const out=document.getElementById('sanitizeOut');
+  if(!raw){out.textContent='';return;}
+  const changed=raw!==clean;
+  out.innerHTML=`<span style="color:${changed?'var(--success)':'var(--text2)'};">${changed?'✅ Sanitized: ':'✓ Clean: '}</span><code style="background:var(--surface2);padding:2px 6px;border-radius: 4px;font-size: 11px;">${s(clean)||'(empty)'}</code>`;
+}
+
+function initDash(){
+  document.getElementById('tblActive').innerHTML=`<thead><tr><th>Provider</th><th>Service</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>`+
+    [['AN','Adaeze N.','Tutoring — Calculus','badge-orange','In Progress','₦4,000',true],['NG','Ngozi E.','Laundry × 2 bags','badge-blue','Confirmed','₦2,000',false]].map(r=>`<tr><td><div class="flex items-center gap-2"><div class="av av-sm" style="background:var(--info-bg);color:var(--info-text);">${r[0]}</div>${r[1]}</div></td><td>${r[2]}</td><td><span class="badge ${r[3]}">${r[4]}</span></td><td class="font-med">${r[5]}</td><td style="display:flex;gap:5px;">${r[6]?`<button class="btn btn-success btn-xs" onclick="toast('Payment released!','success');showModal('ratingModal')">Mark Done</button>`:`<button class="btn btn-slate btn-xs" onclick="toast('Booking cancelled.','info')">Cancel</button>`}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('tblHistory').innerHTML=`<thead><tr><th>Provider</th><th>Service</th><th>Date</th><th>Amount</th><th>Rating</th></tr></thead><tbody>`+[['Chukwuemeka O.','Phone Repair','May 25','₦3,500','★★★★★']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="text-muted">${r[2]}</td><td class="font-med">${r[3]}</td><td style="color: #F59E0B;">${r[4]}</td></tr>`).join('')+'</tbody>';
+}
+function dashTab(w){
+  document.querySelectorAll('#dashTabs .tab').forEach((t,i)=>t.classList.toggle('active',i===(w==='client'?0:1)));
+  document.getElementById('dashClient').style.display=w==='client'?'block':'none';
+  document.getElementById('dashProvider').style.display=w==='provider'?'block':'none';
+}
+
+function initWallet(){
+  document.getElementById('tblTx').innerHTML=`<thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>`+TX.map(t=>`<tr><td class="text-sm text-muted">${t.d}</td><td>${s(t.desc)}</td><td><span class="badge ${t.type==='Top-Up'?'badge-green':'badge-gray'}">${t.type}</span></td><td class="font-med" style="color:${t.amt.startsWith('+')?'var(--success)':'var(--text)'};">${t.amt}</td><td><span class="badge ${t.s==='done'?'badge-green':'badge-orange'}">${t.s==='done'?'Complete':'Held'}</span></td></tr>`).join('')+'</tbody>';
+}
+
+function bookNext(){
+  const price=Math.min(Math.max(parseInt(document.getElementById('bkPrice').value)||3500,100),500000);
+  const comm=Math.round(price*.125);
+  document.getElementById('bkAmt').textContent='₦'+price.toLocaleString();
+  document.getElementById('bkComm').textContent='₦'+comm.toLocaleString();
+  document.getElementById('bkTotal').textContent='₦'+price.toLocaleString();
+  document.getElementById('bookStep1').style.display='none';document.getElementById('bookStep2').style.display='block';
+}
+function bookBack(){document.getElementById('bookStep1').style.display='block';document.getElementById('bookStep2').style.display='none';}
+function confirmBook(){hideModal('bookModal');toast('Booking confirmed! 🎉 Escrow active.','success');}
+function setRating(n){currentRating=n;document.querySelectorAll('#starRow .star').forEach((st,i)=>st.classList.toggle('on',i<n));}
+function submitRating(){hideModal('ratingModal');toast('Thanks for your review!','success');}
+function submitDispute(){
+  const ref=s(document.getElementById('dRef').value);if(!ref){toast('Please provide a booking reference.','error');return;}
+  hideModal('disputeModal');toast('Dispute successfully submitted for review.','success');
+}
+
+function initAdmin(){
+  document.getElementById('tblVerif').innerHTML=`<thead><tr><th>Applicant</th><th>Category</th><th>ID Submitted</th><th>Actions</th></tr></thead><tbody>`+VERIF.map(v=>`<tr><td>${s(v.n)}</td><td>${v.cat}</td><td>${v.id}</td><td><button class="btn btn-success btn-xs" onclick="toast('${s(v.n)} approved','success')">Approve</button></td></tr>`).join('')+'</tbody>';
+  document.getElementById('tblUsers').innerHTML=`<thead><tr><th>Name</th><th>Type</th><th>Status</th></tr></thead><tbody>`+USERS.map(u=>`<tr><td>${s(u.n)}</td><td>${u.t}</td><td>${u.s}</td></tr>`).join('')+'</tbody>';
+  const rc=document.getElementById('revChart');if(rc)rc.innerHTML=[['Tutoring',31,'var(--brand)'],['Repairs',22,'var(--success)']].map(r=>`<div style="margin-bottom: 10px;"><div style="display: flex; justify-content: space-between; margin-bottom: 4px;"><span class="text-xs">${r[0]}</span><span class="text-xs font-med">${r[1]}%</span></div><div class="prog-bar"><div class="prog-fill" style="width: ${r[1]}%; background: ${r[2]};"></div></div></div>`).join('');
+}
+function adminTab(w){
+  ['verif','disputes','users','analytics'].forEach((n,i)=>{
+    document.querySelectorAll('#adminTabs .tab')[i].classList.toggle('active',n===w);
+    const el=document.getElementById('admin'+n.charAt(0).toUpperCase()+n.slice(1));
+    if(el)el.style.display=n===w?'block':'none';
+  });
+}
+
+function initSecurity(){
+  const el=document.getElementById('auditItems');if(!el)return;
+  el.innerHTML=AUDIT.map(a=>`<div class="audit-item"><div class="audit-icon" style="background: var(--success-bg);">${a.icon}</div><div><div class="text-sm font-med">${s(a.label)}</div><div class="text-xs text-muted">${s(a.detail)}</div></div></div>`).join('');
+}
+
+initHome();
+</script>
+</body>
+</html>

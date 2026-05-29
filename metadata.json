@@ -1,0 +1,6 @@
+{
+  "name": "ErrandX",
+  "description": "ErrandX is a verified, on-demand campus service and errand marketplace with secure escrow payments, safety checks, and dispute resolution.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

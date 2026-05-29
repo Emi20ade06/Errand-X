@@ -1,0 +1,290 @@
+import { ServiceProvider, Booking, Transaction, VerificationRequest } from './types';
+
+export const CATEGORIES = [
+  { icon: '📚', name: 'Tutoring', color: '#EEF4FF', textColor: '#0F4C81' },
+  { icon: '🍳', name: 'Food & Cooking', color: '#FEF3E8', textColor: '#EA6B0C' },
+  { icon: '🔧', name: 'Repairs & Tech', color: '#F0FDF4', textColor: '#16A34A' },
+  { icon: '👗', name: 'Laundry', color: '#FDF4FF', textColor: '#D946EF' },
+  { icon: '💇', name: 'Hair & Beauty', color: '#FFF7ED', textColor: '#C2410C' },
+  { icon: '🛵', name: 'Delivery', color: '#F0F9FF', textColor: '#0284C7' },
+  { icon: '📸', name: 'Photography', color: '#FEF2F2', textColor: '#EF4444' },
+  { icon: '🎨', name: 'Design', color: '#ECFDF5', textColor: '#059669' },
+];
+
+export const INITIAL_PROVIDERS: ServiceProvider[] = [
+  {
+    id: 'prov-1',
+    name: 'Adaeze Nwachukwu',
+    cat: 'Tutoring',
+    emoji: '📚',
+    rating: 4.9,
+    jobs: 42,
+    price: '₦2,000/hr',
+    priceVal: 2000,
+    verified: true,
+    vetted: true,
+    bio: '400-level Mathematics student. Specialise in Calculus, Stats, and Physics. 3 years tutoring experience on campus.',
+    skills: ['Mathematics', 'Statistics', 'Physics', 'Chemistry'],
+    userId: 'user-prov-1'
+  },
+  {
+    id: 'prov-2',
+    name: 'Chukwuemeka Obi',
+    cat: 'Repairs & Tech',
+    emoji: '🔧',
+    rating: 4.8,
+    jobs: 67,
+    price: '₦3,000/job',
+    priceVal: 3000,
+    verified: true,
+    vetted: false,
+    bio: 'Electronics engineering student. Phone screen repairs, laptop fixes, and general IT support. Fast turnaround.',
+    skills: ['Phone Repair', 'Laptop Fixes', 'Data Recovery', 'CCTV Install'],
+    userId: 'user-prov-2'
+  },
+  {
+    id: 'prov-3',
+    name: 'Fatima Al-Hassan',
+    cat: 'Food & Cooking',
+    emoji: '🍳',
+    rating: 4.9,
+    jobs: 89,
+    price: '₦1,500/meal',
+    priceVal: 1500,
+    verified: true,
+    vetted: true,
+    bio: 'Trained in Nigerian cuisine and continental dishes. Meal prep, event catering, and hostel deliveries.',
+    skills: ['Jollof Rice', 'Continental', 'Pastries', 'Event Catering'],
+    userId: 'user-prov-3'
+  },
+  {
+    id: 'prov-4',
+    name: 'Tunde Akinwale',
+    cat: 'Hair & Beauty',
+    emoji: '💇',
+    rating: 4.7,
+    jobs: 31,
+    price: '₦2,500/session',
+    priceVal: 2500,
+    verified: true,
+    vetted: false,
+    bio: 'Professional barber and hair stylist. Male cuts, braids, locs, and colour treatments in your room.',
+    skills: ['Haircuts', 'Braiding', 'Locs', 'Colouring'],
+    userId: 'user-prov-4'
+  },
+  {
+    id: 'prov-5',
+    name: 'Blessing Okonkwo',
+    cat: 'Photography',
+    emoji: '📸',
+    rating: 4.8,
+    jobs: 24,
+    price: '₦8,000/shoot',
+    priceVal: 8000,
+    verified: true,
+    vetted: true,
+    bio: '200-level Mass Comm student. Portraits, graduation shoots, event coverage. Own camera equipment.',
+    skills: ['Portraits', 'Events', 'Editing', 'Video'],
+    userId: 'user-prov-5'
+  },
+  {
+    id: 'prov-6',
+    name: 'Ibrahim Musa',
+    cat: 'Delivery',
+    emoji: '🛵',
+    rating: 4.6,
+    jobs: 113,
+    price: '₦500/run',
+    priceVal: 500,
+    verified: true,
+    vetted: false,
+    bio: 'Fast campus errand runner. Grocery pickup, pharmacy runs, document delivery across campus.',
+    skills: ['Grocery', 'Pharmacy', 'Documents', 'Printing'],
+    userId: 'user-prov-6'
+  },
+  {
+    id: 'prov-7',
+    name: 'Ngozi Eze',
+    cat: 'Laundry',
+    emoji: '👗',
+    rating: 4.9,
+    jobs: 58,
+    price: '₦1,000/bag',
+    priceVal: 1000,
+    verified: true,
+    vetted: true,
+    bio: 'Laundry and ironing service. 24hr turnaround. Pickup and delivery to your hostel.',
+    skills: ['Washing', 'Ironing', 'Dry Clean', 'Pickup'],
+    userId: 'user-prov-7'
+  },
+  {
+    id: 'prov-8',
+    name: 'Seun Adeyemi',
+    cat: 'Design',
+    emoji: '🎨',
+    rating: 4.7,
+    jobs: 39,
+    price: '₦5,000/project',
+    priceVal: 5000,
+    verified: true,
+    vetted: false,
+    bio: 'Graphic design and branding for student projects, events, and small businesses. Adobe Suite proficient.',
+    skills: ['Logos', 'Flyers', 'Branding', 'Social Media'],
+    userId: 'user-prov-8'
+  },
+];
+
+export const INITIAL_TRANSACTIONS: Transaction[] = [
+  { id: 'tx-20264', date: 'May 28, 2026', desc: 'Booking #EX-20264 (Tutoring)', type: 'Escrow Hold', amount: -4000, status: 'held' },
+  { id: 'tx-20261', date: 'May 27, 2026', desc: 'Booking #EX-20261 (Laundry)', type: 'Released', amount: -1500, status: 'done' },
+  { id: 'tx-20260', date: 'May 26, 2026', desc: 'Wallet Top-Up via Paystack', type: 'Top-Up', amount: 10000, status: 'done' },
+  { id: 'tx-20258', date: 'May 25, 2026', desc: 'Booking #EX-20258 (Delivery)', type: 'Released', amount: -700, status: 'done' },
+  { id: 'tx-20255', date: 'May 24, 2026', desc: 'Booking #EX-20255 (Tutoring)', type: 'Released', amount: -4000, status: 'done' },
+  { id: 'tx-20254', date: 'May 23, 2026', desc: 'Wallet Top-Up via Paystack', type: 'Top-Up', amount: 20000, status: 'done' },
+];
+
+export const INITIAL_BOOKINGS: Booking[] = [
+  {
+    id: 'EX-20264',
+    clientName: 'Ada Okafor',
+    clientEmail: 'ada@uni.edu.ng',
+    serviceProviderId: 'prov-1',
+    providerName: 'Adaeze Nwachukwu',
+    service: 'Tutoring - Calculus & Vectors',
+    dateTime: '2026-05-30T16:00',
+    location: 'Faculty of Law, Block B',
+    agreedPrice: 4000,
+    commission: 500,
+    status: 'In Progress',
+    createdDate: 'May 28, 2026'
+  },
+  {
+    id: 'EX-20261',
+    clientName: 'Emmanuel Adebagbo',
+    clientEmail: 'theadebagbo@gmail.com',
+    serviceProviderId: 'prov-7',
+    providerName: 'Ngozi Eze',
+    service: 'Laundry × 2 bags with ironing',
+    dateTime: '2026-05-29T10:00',
+    location: 'Saddler Hall, Room 14',
+    agreedPrice: 2000,
+    commission: 250,
+    status: 'Confirmed',
+    createdDate: 'May 27, 2026'
+  },
+  {
+    id: 'EX-20258',
+    clientName: 'Emmanuel Adebagbo',
+    clientEmail: 'theadebagbo@gmail.com',
+    serviceProviderId: 'prov-6',
+    providerName: 'Ibrahim Musa',
+    service: 'Grocery Delivery from UniMarket',
+    dateTime: '2026-05-25T14:30',
+    location: 'Saddler Hall, Room 14',
+    agreedPrice: 700,
+    commission: 87,
+    status: 'Completed',
+    rating: 5,
+    review: 'Super fast delivery. Thanks!',
+    createdDate: 'May 25, 2026'
+  },
+  {
+    id: 'EX-20255',
+    clientName: 'Emmanuel Adebagbo',
+    clientEmail: 'theadebagbo@gmail.com',
+    serviceProviderId: 'prov-1',
+    providerName: 'Adaeze Nwachukwu',
+    service: 'Mathematics Tutorial session',
+    dateTime: '2026-05-24T12:00',
+    location: 'Main Library Study Room 3',
+    agreedPrice: 4000,
+    commission: 500,
+    status: 'Completed',
+    rating: 5,
+    review: 'She explains everything so well.',
+    createdDate: 'May 24, 2026'
+  },
+  {
+    id: 'EX-20252',
+    clientName: 'Ada Okafor',
+    clientEmail: 'ada@uni.edu.ng',
+    serviceProviderId: 'prov-2',
+    providerName: 'Chukwuemeka Obi',
+    service: 'Phone Screen Replacement (iPhone 11)',
+    dateTime: '2026-05-22T11:00',
+    location: 'New Male Hostel, Block D',
+    agreedPrice: 3500,
+    commission: 437,
+    status: 'Completed',
+    rating: 5,
+    review: 'Perfect replacement, very professional',
+    createdDate: 'May 22, 2026'
+  },
+  {
+    id: 'EX-20251',
+    clientName: 'Lola Adesanya',
+    clientEmail: 'lola@uni.edu.ng',
+    serviceProviderId: 'prov-3',
+    providerName: 'Fatima Al-Hassan',
+    service: 'Meal Prep (5 packs continental)',
+    dateTime: '2026-05-20T17:00',
+    location: 'Female Hostel B, Room 104',
+    agreedPrice: 7500,
+    commission: 937,
+    status: 'Completed',
+    rating: 5,
+    review: 'Delicious meals, packaged neatly!',
+    createdDate: 'May 20, 2026'
+  }
+];
+
+export const INITIAL_VERIFICATIONS: VerificationRequest[] = [
+  {
+    id: 'ver-1',
+    userName: 'Sola Fashola',
+    userEmail: 'sola@uni.edu.ng',
+    cat: 'Tutoring',
+    idSubmitted: '✓ Student ID card',
+    matricNo: 'BU22ENG1044',
+    submittedDate: 'May 28, 2026',
+    status: 'Pending'
+  },
+  {
+    id: 'ver-2',
+    userName: 'Mercy Peters',
+    userEmail: 'mercy@uni.edu.ng',
+    cat: 'Hair & Beauty',
+    idSubmitted: '✓ Government NIN Slip',
+    matricNo: 'BU23LAW1009',
+    submittedDate: 'May 27, 2026',
+    status: 'Pending'
+  },
+  {
+    id: 'ver-3',
+    userName: 'Daniel Okeke',
+    userEmail: 'daniel@uni.edu.ng',
+    cat: 'Repairs & Tech',
+    idSubmitted: '✓ Student ID card',
+    matricNo: 'BU22CPE1031',
+    submittedDate: 'May 26, 2026',
+    status: 'Pending'
+  },
+  {
+    id: 'ver-4',
+    userName: 'Amaka Iyke',
+    userEmail: 'amaka@uni.edu.ng',
+    cat: 'Food & Cooking',
+    idSubmitted: '✓ Government ID & Selfie',
+    matricNo: 'BU22MED1017',
+    submittedDate: 'May 25, 2026',
+    status: 'Approved'
+  }
+];
+
+export const INITIAL_USERS = [
+  { id: 'user-client-1', firstName: 'Ada', lastName: 'Okafor', email: 'ada@uni.edu.ng', phone: '+234 810 123 4567', role: 'client', status: 'Active', verified: true, vetted: false, walletBalance: 15400, escrowBalance: 4000, joinedDate: 'Jan 2026' },
+  { id: 'user-emmanuel', firstName: 'Emmanuel', lastName: 'Adebagbo', email: 'theadebagbo@gmail.com', phone: '+234 812 345 6789', role: 'both', status: 'Active', verified: true, vetted: true, walletBalance: 24350, escrowBalance: 10500, joinedDate: 'Feb 2026', matricNumber: 'BU22LAW1001' },
+  { id: 'user-prov-1', firstName: 'Adaeze', lastName: 'Nwachukwu', email: 'adaeze@uni.edu.ng', phone: '+234 811 000 0001', role: 'provider', status: 'Active', verified: true, vetted: true, walletBalance: 8400, escrowBalance: 0, joinedDate: 'Feb 2026' },
+  { id: 'user-lola', firstName: 'Lola', lastName: 'Adesanya', email: 'lola@uni.edu.ng', phone: '+234 813 999 8888', role: 'client', status: 'Active', verified: false, vetted: false, walletBalance: 4200, escrowBalance: 0, joinedDate: 'May 2026' },
+  { id: 'user-musa', firstName: 'Musa', lastName: 'Tanko', email: 'musa@uni.edu.ng', phone: '+234 814 777 6666', role: 'provider', status: 'Suspended', verified: true, vetted: false, walletBalance: 0, escrowBalance: 0, joinedDate: 'Apr 2026' },
+];
