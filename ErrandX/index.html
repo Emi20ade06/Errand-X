@@ -22,7 +22,7 @@
     body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
 
     /* NAV */
-    .nav { background: var(--brand-dark); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 54px; position: sticky; top: 0; z-index: 90; }
+    .nav { background: var(--brand-dark); padding: 0 max(20px, calc((100% - 1240px) / 2)); display: flex; align-items: center; justify-content: space-between; height: 54px; position: sticky; top: 0; z-index: 90; }
     .logo { font-family: 'Syne', system-ui, sans-serif; font-size: 20px; font-weight: 800; color: #fff; cursor: pointer; letter-spacing: -0.5px; flex-shrink: 0; }
     .logo span { color: #FDB97A; }
     .nav-links { display: flex; align-items: center; gap: 2px; overflow: hidden; }
@@ -33,7 +33,7 @@
     .nav-cta:hover { background: var(--accent-hover) !important; }
 
     /* PAGES */
-    .page { display: none; padding: 28px 20px; max-width: 920px; margin: 0 auto; }
+    .page { display: none; padding: 28px 20px; max-width: 1240px; margin: 0 auto; }
     .page.active { display: block; }
 
     /* BUTTONS */
@@ -420,7 +420,7 @@
 <!-- BROWSE -->
 <div class="page" id="page-browse">
   <div style="background: #fff; border-bottom: 1px solid var(--border-light); padding: 18px 20px; margin: -28px -20px 22px;">
-    <div style="max-width: 920px; margin: 0 auto;">
+    <div style="max-width: 1240px; margin: 0 auto;">
       <h2 class="section-title mb-3">Find a Service Provider</h2>
       <div style="display: flex; gap: 8px; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 5px; margin-bottom: 12px;">
         <input id="browseQ" style="flex: 1; border: none; outline: none; padding: 7px 10px; font-family: inherit; font-size: 14px; color: var(--text); background: transparent;" placeholder="Search by skill, name, or keyword..." maxlength="80">
@@ -690,7 +690,7 @@ SMILE_API_KEY=your_smile_api_key</pre>
 
 <!-- ══════════ FOOTER ══════════ -->
 <footer style="background: var(--brand-dark); color: rgba(255,255,255,0.78); padding: 50px 20px 40px; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px;">
-  <div style="max-width: 920px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px;">
+  <div style="max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;">
       
       <div>
